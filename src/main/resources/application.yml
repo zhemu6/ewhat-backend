@@ -1,0 +1,50 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: ewhat-backend
+  datasource:
+    driver-class-name: ${ewhat.datasource.driver-class-name}
+    url: jdbc:mysql://${ewhat.datasource.host}:${ewhat.datasource.port}/${ewhat.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${ewhat.datasource.username}
+    password: ${ewhat.datasource.password}
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+
+# springdoc-openapi
+springdoc:
+  group-configs:
+    - group: default
+      packages-to-scan: com.lushihao.ewhatbackend.controller
+    - group: swagger-config
+      packages-to-scan: com.lushihao.ewhatbackend.controller
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+mybatis-plus:
+  type-aliases-package: com.lushihao.ewhatbackend.model.entity # ?????
+
+ewhat:
+  jwt:
+    admin-secret-key: ${ewhat.jwt.admin-secret-key}
+    admin-ttl: ${admin-ttl}
+    admin-token-name: ${admin-token-name}
+
+    user-secret-key: ${user-secret-key}
+    user-ttl: ${user-ttl}
+    user-token-name: ${user-token-name}
+
+  wechat:
+    appid: ${ewhat.wechat.appid}
+    secret: ${ewhat.wechat.secret}
+    mchid: ${ewhat.wechat.mchid}
+    mchSerialNo: ${ewhat.wechat.mchSerialNo}
+    privateKeyFilePath: ${ewhat.wechat.privateKeyFilePath}
+    apiV3Key: ${ewhat.wechat.apiV3Key}
+    weChatPayCertFilePath: ${ewhat.wechat.weChatPayCertFilePath}
+    notifyUrl: ${ewhat.wechat.notifyUrl}
+    refundNotifyUrl: ${ewhat.wechat.refundNotifyUrl}
