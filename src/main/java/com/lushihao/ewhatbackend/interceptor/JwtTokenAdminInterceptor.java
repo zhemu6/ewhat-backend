@@ -16,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
  * jwt令牌校验的拦截器
+ * @author lushihao
  */
 @Component
 @Slf4j
@@ -53,6 +54,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             return true;
         } catch (Exception ex) {
             //4、不通过，响应401状态码
+            log.error("请求失败，用户未登录");
             response.setStatus(401);
             return false;
         }

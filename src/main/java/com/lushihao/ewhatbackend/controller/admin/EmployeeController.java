@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 管理员相关接口
+ * 管理端-管理员相关接口
  * @author: lushihao
  * @version: 1.0
  * create:   2025-10-22   15:55

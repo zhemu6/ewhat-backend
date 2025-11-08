@@ -9,20 +9,15 @@ import com.lushihao.ewhatbackend.model.entity.User;
 import com.lushihao.ewhatbackend.model.vo.UserLoginVO;
 import com.lushihao.ewhatbackend.service.UserService;
 import com.lushihao.ewhatbackend.utils.JwtUtil;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 微信小程序用户相关操作
+ * 小程序端-用户相关操作
  *
  * @author: lushihao
  * @version: 1.0
@@ -38,6 +33,12 @@ public class UserController {
     @Resource
     private JwtProperties jwtProperties;
 
+    /**
+     * 用户登陆
+     *
+     * @param userLoginDTO 存储UUID
+     * @return
+     */
     @PostMapping("/login")
     public BaseResponse<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("用户登录，登录信息为：{}", userLoginDTO);
@@ -50,5 +51,26 @@ public class UserController {
         UserLoginVO userLoginVO = UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
 
         return ResultUtils.success(userLoginVO);
+    }
+
+    /**
+     * 用户签到功能
+     *
+     * @return 签到成功
+     */
+    @PostMapping("/sign")
+    public BaseResponse<Boolean> sign() {
+        Boolean isSuccess = userService.sign();
+        return ResultUtils.success(isSuccess);
+    }
+
+    /**
+     * 统计当前用户当前月份连续签到数
+     *
+     * @return 签到天数
+     */
+    @GetMapping("/sign/count")
+    public BaseResponse<Integer> signCount() {
+        return ResultUtils.success(userService.signCount());
     }
 }

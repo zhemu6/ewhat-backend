@@ -2,6 +2,7 @@ package com.lushihao.ewhatbackend.constant;
 
 /**
  * 状态常量，启用或者禁用
+ * @author lushihao
  */
 public class StatusConstant {
 

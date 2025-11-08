@@ -11,10 +11,9 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 /**
- * 学校管理
+ * 管理端-学校管理
  * @author: lushihao
  * @version: 1.0
  * create:   2025-10-22   16:45

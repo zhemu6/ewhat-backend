@@ -27,4 +27,6 @@ public interface CanteenService extends IService<Canteen> {
     List<Canteen> queryCanteenBySchoolId(Long schoolId);
 
     List<CanteenVO> listCanteenVOsBySchoolByList(Long schoolId);
+
+    List<CanteenVO> queryCanteenVOsBySchoolId(Long schoolId, Integer current, Double x, Double y,Integer distance);
 }

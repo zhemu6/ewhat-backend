@@ -17,7 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CanteenVO implements Serializable {
-
+    private Long id;
     /**
      * 食堂名称
      */
@@ -57,7 +57,10 @@ public class CanteenVO implements Serializable {
      * 营业时间，例如 10:00-22:00
      */
     private String openHours;
-
+    /**
+     * 距离
+     */
+    private Double distance;
 
     private static final long serialVersionUID = 1L;
 }
