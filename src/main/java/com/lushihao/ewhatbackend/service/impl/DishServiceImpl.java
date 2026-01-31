@@ -16,7 +16,7 @@ import com.lushihao.ewhatbackend.model.vo.DishVO;
 import com.lushihao.ewhatbackend.service.CanteenService;
 import com.lushihao.ewhatbackend.service.DishService;
 import com.lushihao.ewhatbackend.mapper.DishMapper;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -29,10 +29,11 @@ import java.util.List;
 * @createDate 2025-11-05 16:35:31
 */
 @Service
+@RequiredArgsConstructor
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish>
     implements DishService {
-    @Resource
-    private CanteenService canteenService;
+
+    private final CanteenService canteenService;
 
 
     @Override

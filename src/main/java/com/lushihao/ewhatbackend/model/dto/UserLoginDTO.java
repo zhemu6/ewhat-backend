@@ -16,4 +16,9 @@ public class UserLoginDTO implements Serializable {
 
     private String code;
 
+    /**
+     * User-selected school at login time.
+     */
+    private Long schoolId;
+
 }

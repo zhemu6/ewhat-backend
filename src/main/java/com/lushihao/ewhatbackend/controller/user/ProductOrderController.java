@@ -3,7 +3,7 @@ package com.lushihao.ewhatbackend.controller.user;
 import com.lushihao.ewhatbackend.common.BaseResponse;
 import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.service.ProductOrderService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController("userProductOrderController")
 @RequestMapping("/user/product-order")
+@RequiredArgsConstructor
 public class ProductOrderController {
-    @Resource
-    private ProductOrderService productOrderService;
+
+    private final ProductOrderService productOrderService;
 
     /**
      * 普通商品下单

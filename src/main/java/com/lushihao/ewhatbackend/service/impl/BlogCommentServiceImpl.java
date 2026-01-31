@@ -22,7 +22,7 @@ import com.lushihao.ewhatbackend.service.BlogCommentService;
 import com.lushihao.ewhatbackend.mapper.BlogCommentMapper;
 import com.lushihao.ewhatbackend.service.BlogService;
 import com.lushihao.ewhatbackend.service.UserService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -39,16 +39,13 @@ import static com.lushihao.ewhatbackend.constant.RedisConstants.BLOG_COMMENT_LIK
  * @createDate 2025-11-05 22:13:49
  */
 @Service
+@RequiredArgsConstructor
 public class BlogCommentServiceImpl extends ServiceImpl<BlogCommentMapper, BlogComment>
         implements BlogCommentService {
 
-    @Resource
-    private UserMapper userMapper;
-    @Resource
-    private BlogService blogService;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private final UserMapper userMapper;
+    private final BlogService blogService;
+    private final StringRedisTemplate stringRedisTemplate;
 
     /**
      * 发表评论

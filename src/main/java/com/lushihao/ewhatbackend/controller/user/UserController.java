@@ -4,12 +4,13 @@ import com.lushihao.ewhatbackend.common.BaseResponse;
 import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.config.JwtProperties;
 import com.lushihao.ewhatbackend.constant.JwtClaimsConstant;
+import com.lushihao.ewhatbackend.context.TenantContextHolder;
 import com.lushihao.ewhatbackend.model.dto.UserLoginDTO;
 import com.lushihao.ewhatbackend.model.entity.User;
 import com.lushihao.ewhatbackend.model.vo.UserLoginVO;
 import com.lushihao.ewhatbackend.service.UserService;
 import com.lushihao.ewhatbackend.utils.JwtUtil;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +27,12 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/user/user")
+@RequiredArgsConstructor
 public class UserController {
-    @Resource
-    private UserService userService;
 
-    @Resource
-    private JwtProperties jwtProperties;
+    private final UserService userService;
+
+    private final JwtProperties jwtProperties;
 
     /**
      * 用户登陆
@@ -41,16 +42,30 @@ public class UserController {
      */
     @PostMapping("/login")
     public BaseResponse<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        log.info("用户登录，登录信息为：{}", userLoginDTO);
-        // 获得一个登录用户
-        User user = userService.login(userLoginDTO);
+        try {
+            log.info("用户登录");
+            // 获得一个登录用户
+            User user = userService.login(userLoginDTO);
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put(JwtClaimsConstant.USER_ID, user.getId());
-        String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
-        UserLoginVO userLoginVO = UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
+            Map<String, Object> claims = new HashMap<>();
+            claims.put(JwtClaimsConstant.USER_ID, user.getId());
+            String token = JwtUtil.createJWT(jwtProperties.getUserSecretKey(), jwtProperties.getUserTtl(), claims);
+            UserLoginVO userLoginVO = UserLoginVO.builder().id(user.getId()).openid(user.getOpenid()).token(token).build();
 
-        return ResultUtils.success(userLoginVO);
+            return ResultUtils.success(userLoginVO);
+        } finally {
+            // login endpoint is excluded from interceptor; must clear manually
+            TenantContextHolder.clear();
+        }
+    }
+
+    /**
+     * 更新当前用户绑定的学校。
+     * 历史数据不迁移：老数据仍属于原 school_id，新学校下默认不可见。
+     */
+    @PutMapping("/school")
+    public BaseResponse<Boolean> updateSchool(@RequestParam("schoolId") Long schoolId) {
+        return ResultUtils.success(userService.updateSchoolId(schoolId));
     }
 
     /**

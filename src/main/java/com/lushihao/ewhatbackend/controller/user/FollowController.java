@@ -4,7 +4,7 @@ import com.lushihao.ewhatbackend.common.BaseResponse;
 import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.vo.UserVO;
 import com.lushihao.ewhatbackend.service.FollowService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,10 @@ import java.util.List;
 @Slf4j
 @RestController("userFollowController")
 @RequestMapping("/user/follow")
+@RequiredArgsConstructor
 public class FollowController {
-    @Resource
-    private FollowService followService;
+
+    private final FollowService followService;
 
     /**
      * 当前登陆用户关注或者取关followUserId

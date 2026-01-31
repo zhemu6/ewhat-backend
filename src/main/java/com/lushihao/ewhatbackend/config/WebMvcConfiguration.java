@@ -37,6 +37,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/user/**")
                 .excludePathPatterns("/user/user/login")
+                // Allow anonymous school selection during onboarding
+                .excludePathPatterns("/user/school/list")
                 .excludePathPatterns("/user/shop/status");
     }
 

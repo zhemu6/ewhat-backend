@@ -7,11 +7,9 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.dto.BlogCommentDTO;
 import com.lushihao.ewhatbackend.model.vo.BlogCommentVO;
 import com.lushihao.ewhatbackend.service.BlogCommentService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-
-import javax.xml.transform.Result;
 
 /**
  * 小程序段-博客评论管理
@@ -23,9 +21,10 @@ import javax.xml.transform.Result;
 @Slf4j
 @RequestMapping("/user/blog_comment")
 @RestController("userBlogCommentController")
+@RequiredArgsConstructor
 public class BlogCommentController {
-    @Resource
-    private BlogCommentService blogCommentService;
+
+    private final BlogCommentService blogCommentService;
 
     /**
      * 发表评论

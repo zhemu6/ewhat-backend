@@ -2,13 +2,16 @@ package com.lushihao.ewhatbackend.interceptor;
 
 import com.lushihao.ewhatbackend.config.JwtProperties;
 import com.lushihao.ewhatbackend.constant.JwtClaimsConstant;
+import com.lushihao.ewhatbackend.constant.RoleConstant;
 import com.lushihao.ewhatbackend.context.BaseContext;
+import com.lushihao.ewhatbackend.context.TenantContextHolder;
+import com.lushihao.ewhatbackend.mapper.EmployeeMapper;
 import com.lushihao.ewhatbackend.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,10 +23,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtTokenAdminInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private JwtProperties jwtProperties;
+    private final JwtProperties jwtProperties;
+    private final EmployeeMapper employeeMapper;
 
     /**
      * 校验jwt
@@ -50,6 +54,41 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             BaseContext.setCurrentId(empId);
+
+            Integer role;
+            Object roleObj = claims.get(JwtClaimsConstant.ROLE);
+            if (roleObj != null) {
+                role = Integer.valueOf(roleObj.toString());
+            } else {
+                role = employeeMapper.selectRoleByIdNoTenant(empId);
+            }
+            TenantContextHolder.setRole(role);
+
+            if (RoleConstant.SUPER_ADMIN == role) {
+                // Super admin: require explicit school context for writes.
+                String schoolIdHeader = request.getHeader("X-School-Id");
+                if (schoolIdHeader != null && !schoolIdHeader.isBlank()) {
+                    TenantContextHolder.setSchoolId(Long.valueOf(schoolIdHeader));
+                    TenantContextHolder.setTenantBypass(false);
+                } else {
+                    TenantContextHolder.setTenantBypass(true);
+                    if (!"GET".equalsIgnoreCase(request.getMethod())) {
+                        response.setStatus(400);
+                        return false;
+                    }
+                }
+            } else {
+                Long schoolId;
+                Object schoolObj = claims.get(JwtClaimsConstant.SCHOOL_ID);
+                if (schoolObj != null) {
+                    schoolId = Long.valueOf(schoolObj.toString());
+                } else {
+                    schoolId = employeeMapper.selectSchoolIdByIdNoTenant(empId);
+                }
+                TenantContextHolder.setSchoolId(schoolId);
+                TenantContextHolder.setTenantBypass(false);
+            }
+
             //3、通过，放行
             return true;
         } catch (Exception ex) {
@@ -58,5 +97,11 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
             response.setStatus(401);
             return false;
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        BaseContext.removeCurrentId();
+        TenantContextHolder.clear();
     }
 }

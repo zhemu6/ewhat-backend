@@ -1,15 +1,14 @@
 package com.lushihao.ewhatbackend.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lushihao.ewhatbackend.constant.StatusConstant;
 import com.lushihao.ewhatbackend.exception.ErrorCode;
 import com.lushihao.ewhatbackend.exception.ThrowUtils;
+import com.lushihao.ewhatbackend.mapper.EmployeeMapper;
 import com.lushihao.ewhatbackend.model.dto.EmployeeLoginDTO;
 import com.lushihao.ewhatbackend.model.entity.Employee;
 import com.lushihao.ewhatbackend.service.EmployeeService;
-import com.lushihao.ewhatbackend.mapper.EmployeeMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -32,8 +31,7 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee>
         String username = employeeLoginDTO.getUsername();
         String password = employeeLoginDTO.getPassword();
         // 2. 用户不存在 说明账户异常
-        QueryWrapper<Employee> wrapper = new QueryWrapper<Employee>().eq("username", username);
-        Employee employee = this.getOne(wrapper);
+        Employee employee = this.getBaseMapper().selectByUsernameNoTenant(username);
         ThrowUtils.throwIf(employee==null, ErrorCode.NOT_FOUND_ERROR,"登录失败，账户不存在!");
         // 3. 对密码进行加密 与数据库中密码对比
         // 3.1 md5加密

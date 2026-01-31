@@ -9,7 +9,7 @@ import com.lushihao.ewhatbackend.model.vo.BlogVO;
 import com.lushihao.ewhatbackend.model.vo.ScrollResult;
 import com.lushihao.ewhatbackend.model.vo.UserVO;
 import com.lushihao.ewhatbackend.service.BlogService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +24,10 @@ import java.util.List;
 @Slf4j
 @RestController("userBlogController")
 @RequestMapping("/user/blog")
+@RequiredArgsConstructor
 public class BlogController {
-    @Resource
-    private BlogService blogService;
+
+    private final BlogService blogService;
 
     /**
      * 发布博文

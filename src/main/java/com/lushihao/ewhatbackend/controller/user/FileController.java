@@ -10,7 +10,7 @@ import com.lushihao.ewhatbackend.exception.ErrorCode;
 import com.lushihao.ewhatbackend.manager.CosManager;
 import com.lushihao.ewhatbackend.model.dto.UploadFileRequest;
 import com.lushihao.ewhatbackend.model.enums.FileUploadBizEnum;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +31,10 @@ import java.util.Arrays;
 @RestController("userFileController")
 @RequestMapping("/user/file")
 @Slf4j
+@RequiredArgsConstructor
 public class FileController {
-    @Resource
-    private CosManager cosManager;
+
+    private final CosManager cosManager;
 
     /**
      * 文件上传
@@ -62,11 +63,11 @@ public class FileController {
             file = File.createTempFile(filepath, null);
             multipartFile.transferTo(file);
             cosManager.putObject(filepath, file);
-            log.info("file upload success, filepath = " + FileConstant.COS_HOST + filepath);
+            log.info("file upload success, filepath = {}{}", FileConstant.COS_HOST, filepath);
             // 返回可访问地址
             return ResultUtils.success(FileConstant.COS_HOST + filepath);
         } catch (Exception e) {
-            log.error("file upload error, filepath = " + filepath, e);
+            log.error("file upload error, filepath = {}", filepath, e);
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "上传失败");
         } finally {
             if (file != null) {

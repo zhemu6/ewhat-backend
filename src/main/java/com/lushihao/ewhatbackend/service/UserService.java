@@ -16,4 +16,6 @@ public interface UserService extends IService<User> {
     Boolean sign();
 
     Integer signCount();
+
+    Boolean updateSchoolId(Long schoolId);
 }

@@ -1,24 +1,25 @@
 package com.lushihao.ewhatbackend.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.date.DateTime;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lushihao.ewhatbackend.constant.WeChatProperties;
 import com.lushihao.ewhatbackend.context.BaseContext;
+import com.lushihao.ewhatbackend.context.TenantContextHolder;
 import com.lushihao.ewhatbackend.exception.ErrorCode;
 import com.lushihao.ewhatbackend.exception.ThrowUtils;
 import com.lushihao.ewhatbackend.model.dto.UserLoginDTO;
 import com.lushihao.ewhatbackend.model.entity.PointsRecord;
+import com.lushihao.ewhatbackend.model.entity.School;
 import com.lushihao.ewhatbackend.model.entity.User;
+import com.lushihao.ewhatbackend.service.SchoolService;
 import com.lushihao.ewhatbackend.service.UserService;
+import com.lushihao.ewhatbackend.service.PointsRecordService;
 import com.lushihao.ewhatbackend.mapper.UserMapper;
 import com.lushihao.ewhatbackend.utils.HttpClientUtil;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,16 +41,19 @@ import static com.lushihao.ewhatbackend.constant.RedisConstants.USER_SIGN_KEY;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
 
 
-    @Resource
-    private WeChatProperties weChatProperties;
+    private final WeChatProperties weChatProperties;
 
     public static final String WX_LOGIN = "https://api.weixin.qq.com/sns/jscode2session";
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
+
+    private final SchoolService schoolService;
+
+    private final PointsRecordService pointsRecordService;
 
 
     /**
@@ -59,22 +64,48 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public User login(UserLoginDTO userLoginDTO) {
-        // 根据
-        String code = userLoginDTO.getCode();
+        Long schoolId = userLoginDTO.getSchoolId();
+        ThrowUtils.throwIf(schoolId == null, ErrorCode.PARAMS_ERROR, "请选择学校");
+        School school = schoolService.getById(schoolId);
+        ThrowUtils.throwIf(school == null, ErrorCode.NOT_FOUND_ERROR, "选择的学校不存在");
+
         String openid = getOpenId(userLoginDTO.getCode());
 
         // 对Openid去做校验
         ThrowUtils.throwIf(openid == null, ErrorCode.USER_LOGIN_FAILED, "用户登录失败，openid为空");
         // 通过openid获得登录用户
-        QueryWrapper<User> wrapper = new QueryWrapper<User>().eq("openid", openid);
-        User user = this.getOne(wrapper);
+        User user = this.getBaseMapper().selectByOpenidNoTenant(openid);
         // 如果这个用户是新用户 存起来Openid 自动完成注册实现 返回用户对象
         if (user == null) {
-            user = User.builder().openid(openid).createTime(DateTime.now()).build();
+            user = User.builder()
+                    .openid(openid)
+                    .schoolId(schoolId)
+                    .createTime(LocalDateTime.now())
+                    .build();
+            TenantContextHolder.setSchoolId(schoolId);
             this.save(user);
+        } else {
+            // user selects school at login; update binding immediately (history is NOT migrated)
+            if (user.getSchoolId() == null || !schoolId.equals(user.getSchoolId())) {
+                this.getBaseMapper().updateSchoolIdByIdNoTenant(user.getId(), schoolId);
+                user.setSchoolId(schoolId);
+            }
         }
         // 返回这个对象
         return user;
+    }
+
+    @Override
+    public Boolean updateSchoolId(Long schoolId) {
+        ThrowUtils.throwIf(schoolId == null, ErrorCode.PARAMS_ERROR, "请选择学校");
+        School school = schoolService.getById(schoolId);
+        ThrowUtils.throwIf(school == null, ErrorCode.NOT_FOUND_ERROR, "选择的学校不存在");
+        Long userId = BaseContext.getCurrentId();
+        ThrowUtils.throwIf(userId == null, ErrorCode.NO_AUTH_ERROR, "尚未登录");
+        int updated = this.getBaseMapper().updateSchoolIdByIdNoTenant(userId, schoolId);
+        ThrowUtils.throwIf(updated <= 0, ErrorCode.OPERATION_ERROR, "更新学校失败");
+        TenantContextHolder.setSchoolId(schoolId);
+        return true;
     }
 
     /**
@@ -129,11 +160,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 2. 记录积分流水
         PointsRecord record = PointsRecord.builder()
                 .userId(userId)
+                .schoolId(TenantContextHolder.getSchoolId())
                 .points(points)
                 .type(type)
                 .orderId(orderId)
                 .description(description)
-                .createTime(LocalDateTime.now())
+                .createTime(new Date())
                 .build();
 
         pointsRecordService.save(record);
@@ -176,6 +208,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             num >>>= 1;
         }
         return count;
+    }
+
+    /**
+     * Calculate sign-in reward points based on continuous sign-in days.
+     *
+     * NOTE: This is a conservative default rule; adjust if product rules differ.
+     */
+    private Long caculateSignPoints(Integer continuousDays) {
+        if (continuousDays == null || continuousDays <= 0) {
+            return 0L;
+        }
+        if (continuousDays >= 30) {
+            return 30L;
+        }
+        if (continuousDays >= 7) {
+            return 7L;
+        }
+        return 1L;
     }
 
     private String getOpenId(String code) {

@@ -18,8 +18,7 @@ import com.lushihao.ewhatbackend.model.vo.CanteenVO;
 import com.lushihao.ewhatbackend.service.CanteenService;
 import com.lushihao.ewhatbackend.mapper.CanteenMapper;
 import com.lushihao.ewhatbackend.service.SchoolService;
-import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.GeoResult;
@@ -40,12 +39,12 @@ import static com.lushihao.ewhatbackend.constant.RedisConstants.SCHOOL_GEO_KEY;
 * @createDate 2025-10-22 17:56:01
 */
 @Service
+@RequiredArgsConstructor
 public class CanteenServiceImpl extends ServiceImpl<CanteenMapper, Canteen>
     implements CanteenService{
-    @Resource
-    private SchoolService schoolService;
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+
+    private final SchoolService schoolService;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public Canteen queryCanteenById(Long id) {

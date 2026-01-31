@@ -8,7 +8,7 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.entity.School;
 import com.lushihao.ewhatbackend.model.vo.SchoolVO;
 import com.lushihao.ewhatbackend.service.SchoolService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,10 +26,10 @@ import java.util.List;
 @Slf4j
 @RestController("userSchoolController")
 @RequestMapping("/user/school")
+@RequiredArgsConstructor
 public class SchoolController {
 
-    @Resource
-    private SchoolService schoolService;
+    private final SchoolService schoolService;
 
     /**
      * 根据id查询学校

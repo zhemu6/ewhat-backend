@@ -40,6 +40,11 @@ public class Dish implements Serializable {
     private Long canteenId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 图片，多个图片以','隔开
      */
     private String images;

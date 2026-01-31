@@ -39,6 +39,11 @@ public class Blog implements Serializable {
     private Long userId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 标题
      */
     private String title;

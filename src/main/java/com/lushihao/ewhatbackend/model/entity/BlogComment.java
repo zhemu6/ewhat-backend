@@ -40,6 +40,11 @@ public class BlogComment implements Serializable {
     private Long blogId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 关联的1级评论id，如果是一级评论，则值为0
      */
     private Long parentId;

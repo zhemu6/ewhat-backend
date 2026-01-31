@@ -9,7 +9,7 @@ import com.lushihao.ewhatbackend.exception.ThrowUtils;
 import com.lushihao.ewhatbackend.model.dto.BlogStatusUpdateRequest;
 import com.lushihao.ewhatbackend.model.entity.Blog;
 import com.lushihao.ewhatbackend.service.BlogService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +22,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController("adminBlogController")
 @RequestMapping("/admin/blog")
+@RequiredArgsConstructor
 public class BlogController {
-    @Resource
-    private BlogService blogService;
+
+    private final BlogService blogService;
 
     /**
      * 根据id查询博文

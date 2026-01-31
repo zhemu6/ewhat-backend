@@ -7,7 +7,7 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.dto.CanteenDTO;
 import com.lushihao.ewhatbackend.model.entity.Canteen;
 import com.lushihao.ewhatbackend.service.CanteenService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +22,10 @@ import java.util.List;
 @Slf4j
 @RestController("adminCanteenController")
 @RequestMapping("/admin/canteen")
+@RequiredArgsConstructor
 public class CanteenController {
 
-    @Resource
-    private CanteenService canteenService;
+    private final CanteenService canteenService;
 
     /**
      * 根据id查询食堂
