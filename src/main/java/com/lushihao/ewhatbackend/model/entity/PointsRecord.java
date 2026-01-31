@@ -35,6 +35,11 @@ public class PointsRecord implements Serializable {
     private Long userId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 积分变动数量（正数为获得，负数为消费）
      */
     private Long points;

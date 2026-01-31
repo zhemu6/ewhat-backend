@@ -30,6 +30,11 @@ public class SeckillProduct implements Serializable {
     private Long productId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 库存
      */
     private Integer stock;
