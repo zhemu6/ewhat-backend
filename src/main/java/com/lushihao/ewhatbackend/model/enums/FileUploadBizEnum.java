@@ -21,9 +21,6 @@ public enum FileUploadBizEnum {
     CANTEEN_IMAGE("食堂图片", "canteen_image"),
     PRODUCT_IMAGE("商品图片", "product_image");
 
-
-
-
     private final String text;
 
     private final String value;
