@@ -40,6 +40,11 @@ public class Follow implements Serializable {
     private Long followUserId;
 
     /**
+     * Tenant id.
+     */
+    private Long schoolId;
+
+    /**
      * 创建时间
      */
     private Date createTime;
