@@ -13,7 +13,11 @@ import org.apache.ibatis.annotations.Update;
 * @Entity com.lushihao.ewhatbackend.model.entity.User
 */
 public interface UserMapper extends BaseMapper<User> {
-
+    /**
+     * 其中@InterceptorIgnore 代表忽略多租户
+     * @param openid openid
+     * @return
+     */
     @InterceptorIgnore(tenantLine = "1")
     @Select("select * from tb_user where openid = #{openid} limit 1")
     User selectByOpenidNoTenant(String openid);
