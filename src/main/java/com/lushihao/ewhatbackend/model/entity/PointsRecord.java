@@ -5,25 +5,24 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 /**
- * 用户信息
+ * 积分流水表
  * @author lushihao
- * @TableName tb_user
+ * @TableName tb_points_record
  */
-@TableName(value ="tb_user")
+@TableName(value ="tb_points_record")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class PointsRecord implements Serializable {
     /**
      * 主键
      */
@@ -31,49 +30,34 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 微信用户唯一标识
+     * 用户id
      */
-    private String openid;
+    private Long userId;
 
     /**
-     * 姓名
-     */
-    private String name;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 积分
+     * 积分变动数量（正数为获得，负数为消费）
      */
     private Long points;
 
     /**
-     * 性别
+     * 类型：1-签到获得，2-订单支付，3-订单退款，4-管理员调整
      */
-    private String sex;
+    private Integer type;
 
     /**
-     * 身份证号
+     * 关联订单id（如果是订单相关）
      */
-    private String idNumber;
+    private Long orderId;
 
     /**
-     * 头像
+     * 描述
      */
-    private String avatar;
+    private String description;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
-
-    /**
-     * 更新时间
-     */
-    private LocalDateTime updateTime;
+    private Date createTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

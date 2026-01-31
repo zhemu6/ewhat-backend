@@ -35,4 +35,8 @@ public class RedisConstants {
 //    public static final String USER_COMMON
     // 学校业务有关
     public static final String SCHOOL_GEO_KEY = "school:geo:";
+
+    // 博文评论相关
+    public static final String BLOG_COMMENT_LIKED_KEY = "blogComment:liked:";
+
 }

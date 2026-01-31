@@ -1,6 +1,5 @@
 package com.lushihao.ewhatbackend.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -8,67 +7,47 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 /**
- * 用户信息
+ * 秒杀商品表，与商品表是一对一关系
  * @author lushihao
- * @TableName tb_user
+ * @TableName tb_seckill_product
  */
-@TableName(value ="tb_user")
+@TableName(value ="tb_seckill_product")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class SeckillProduct implements Serializable {
     /**
-     * 主键
+     * 关联的商品的id
      */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+    @TableId
+    private Long productId;
 
     /**
-     * 微信用户唯一标识
+     * 库存
      */
-    private String openid;
-
-    /**
-     * 姓名
-     */
-    private String name;
-
-    /**
-     * 手机号
-     */
-    private String phone;
-
-    /**
-     * 积分
-     */
-    private Long points;
-
-    /**
-     * 性别
-     */
-    private String sex;
-
-    /**
-     * 身份证号
-     */
-    private String idNumber;
-
-    /**
-     * 头像
-     */
-    private String avatar;
+    private Integer stock;
 
     /**
      * 创建时间
      */
     private LocalDateTime createTime;
+
+    /**
+     * 生效时间
+     */
+    private LocalDateTime beginTime;
+
+    /**
+     * 失效时间
+     */
+    private LocalDateTime endTime;
 
     /**
      * 更新时间

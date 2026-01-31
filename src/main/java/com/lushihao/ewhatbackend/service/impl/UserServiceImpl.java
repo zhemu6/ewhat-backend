@@ -11,6 +11,7 @@ import com.lushihao.ewhatbackend.context.BaseContext;
 import com.lushihao.ewhatbackend.exception.ErrorCode;
 import com.lushihao.ewhatbackend.exception.ThrowUtils;
 import com.lushihao.ewhatbackend.model.dto.UserLoginDTO;
+import com.lushihao.ewhatbackend.model.entity.PointsRecord;
 import com.lushihao.ewhatbackend.model.entity.User;
 import com.lushihao.ewhatbackend.service.UserService;
 import com.lushihao.ewhatbackend.mapper.UserMapper;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -91,9 +93,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String key = USER_SIGN_KEY + userId + keySuffix;
         // 4.获取当前是本月的第几天
         int dayOfMonth = now.getDayOfMonth();
-        // 5.写入Redis setbit key offset 1
+        // 5.检查今天是否签到
+        Boolean isSigned = stringRedisTemplate.opsForValue().getBit(key, dayOfMonth - 1);
+        ThrowUtils.throwIf(Boolean.TRUE.equals(isSigned), ErrorCode.OPERATION_ERROR, "今日已签到！");
+        // 6.写入Redis setbit key offset 1
         stringRedisTemplate.opsForValue().setBit(key, dayOfMonth - 1, true);
+        // 7.计算连续签到数
+        Integer continuousDays = signCount();
+        // 8.计算签到奖励积分
+        Long pointsReward = caculateSignPoints(continuousDays);
+        // 增加用户积分
+        addPoints(userId, pointsReward, 1, null, "签到获得，连续签到" + continuousDays + "天");
         return true;
+    }
+
+    /**
+     * 增加用户积分
+     * @param userId 用户ID
+     * @param points 积分数量（正数）
+     * @param type 类型：1-签到，2-订单支付，3-订单退款，4-管理员调整
+     * @param orderId 订单ID（可选）
+     * @param description 描述
+     */
+    @Transactional
+    public void addPoints(Long userId, Long points, Integer type, Long orderId, String description) {
+        // 1. 更新用户积分
+        User user = this.getById(userId);
+        ThrowUtils.throwIf(user == null, ErrorCode.NOT_FOUND_ERROR, "用户不存在");
+
+        this.update()
+                .setSql("points = points + " + points)
+                .eq("id", userId)
+                .update();
+
+        // 2. 记录积分流水
+        PointsRecord record = PointsRecord.builder()
+                .userId(userId)
+                .points(points)
+                .type(type)
+                .orderId(orderId)
+                .description(description)
+                .createTime(LocalDateTime.now())
+                .build();
+
+        pointsRecordService.save(record);
     }
 
     @Override

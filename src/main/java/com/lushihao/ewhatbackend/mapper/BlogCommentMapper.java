@@ -1,6 +1,6 @@
 package com.lushihao.ewhatbackend.mapper;
 
-import com.lushihao.ewhatbackend.model.entity.BlogComments;
+import com.lushihao.ewhatbackend.model.entity.BlogComment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @createDate 2025-11-05 22:13:49
 * @Entity com.lushihao.ewhatbackend.model.entity.BlogComments
 */
-public interface BlogCommentsMapper extends BaseMapper<BlogComments> {
+public interface BlogCommentMapper extends BaseMapper<BlogComment> {
 
 }
 

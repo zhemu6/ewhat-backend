@@ -5,25 +5,24 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
 
 /**
- * 用户信息
+ * 博文评论
  * @author lushihao
- * @TableName tb_user
+ * @TableName tb_blog_comments
  */
-@TableName(value ="tb_user")
+@TableName(value = "tb_blog_comment")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
+public class BlogComment implements Serializable {
     /**
      * 主键
      */
@@ -31,49 +30,49 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 微信用户唯一标识
+     * 用户id
      */
-    private String openid;
+    private Long userId;
 
     /**
-     * 姓名
+     * 博文id
      */
-    private String name;
+    private Long blogId;
 
     /**
-     * 手机号
+     * 关联的1级评论id，如果是一级评论，则值为0
      */
-    private String phone;
+    private Long parentId;
 
     /**
-     * 积分
+     * 回复的评论id
      */
-    private Long points;
+    private Long answerId;
 
     /**
-     * 性别
+     * 回复的内容
      */
-    private String sex;
+    private String content;
 
     /**
-     * 身份证号
+     * 点赞数
      */
-    private String idNumber;
+    private Integer liked;
 
     /**
-     * 头像
+     * 状态，0：正常，1：被举报，2：禁止查看
      */
-    private String avatar;
+    private Integer status;
 
     /**
      * 创建时间
      */
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
      * 更新时间
      */
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

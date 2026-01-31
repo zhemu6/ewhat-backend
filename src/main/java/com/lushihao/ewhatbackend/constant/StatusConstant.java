@@ -6,9 +6,16 @@ package com.lushihao.ewhatbackend.constant;
  */
 public class StatusConstant {
 
-    //启用
+    // 启用
     public static final Integer ENABLE = 1;
 
-    //禁用
+    // 禁用
     public static final Integer DISABLE = 0;
+
+    // 被举报 审查中
+    public static final Integer BAN = 2;
+
+    // 已删除
+    public static final Integer DELETE = 3;
+
 }

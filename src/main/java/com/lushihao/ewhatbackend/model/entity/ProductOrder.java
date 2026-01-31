@@ -1,10 +1,10 @@
 package com.lushihao.ewhatbackend.model.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -13,66 +13,61 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 博文评论
+ * 商品订单
  * @author lushihao
- * @TableName tb_blog_comments
+ * @TableName tb_product_order
  */
-@TableName(value ="tb_blog_comments")
+@TableName(value ="tb_product_order")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlogComments implements Serializable {
+public class ProductOrder implements Serializable {
     /**
      * 主键
      */
-    @TableId(type = IdType.AUTO)
+    @TableId
     private Long id;
 
     /**
-     * 用户id
+     * 下单的用户id
      */
     private Long userId;
 
     /**
-     * 博文id
+     * 购买的代金券id
      */
-    private Long blogId;
+    private Long productId;
 
     /**
-     * 关联的1级评论id，如果是一级评论，则值为0
-     */
-    private Long parentId;
-
-    /**
-     * 回复的评论id
-     */
-    private Long answerId;
-
-    /**
-     * 回复的内容
-     */
-    private String content;
-
-    /**
-     * 点赞数
-     */
-    private Integer liked;
-
-    /**
-     * 状态，0：正常，1：被举报，2：禁止查看
+     * 订单状态，1：未支付；2：已支付；3：已核销；4：已取消；5：退款中；6：已退款
      */
     private Integer status;
 
     /**
-     * 创建时间
+     * 下单时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
+
+    /**
+     * 支付时间
+     */
+    private LocalDateTime payTime;
+
+    /**
+     * 核销时间
+     */
+    private LocalDateTime useTime;
+
+    /**
+     * 退款时间
+     */
+    private LocalDateTime refundTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

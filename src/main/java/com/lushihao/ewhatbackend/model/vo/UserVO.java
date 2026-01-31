@@ -44,5 +44,6 @@ public class UserVO implements Serializable {
     private String avatar;
 
 
+
     private static final long serialVersionUID = 1L;
 }

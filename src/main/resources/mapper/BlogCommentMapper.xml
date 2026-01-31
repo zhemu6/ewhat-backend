@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lushihao.ewhatbackend.mapper.BlogCommentsMapper">
+<mapper namespace="com.lushihao.ewhatbackend.mapper.BlogCommentMapper">
 
-    <resultMap id="BaseResultMap" type="com.lushihao.ewhatbackend.model.entity.BlogComments">
+    <resultMap id="BaseResultMap" type="com.lushihao.ewhatbackend.model.entity.BlogComment">
             <id property="id" column="id" />
             <result property="userId" column="user_id" />
             <result property="blogId" column="blog_id" />

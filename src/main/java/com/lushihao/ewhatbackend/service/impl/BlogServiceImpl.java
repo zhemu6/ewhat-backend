@@ -102,12 +102,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog>
             if (isSuccess) {
                 stringRedisTemplate.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());
             }
-        }
-        // 已点赞 那就执行取消点赞
-        boolean isSuccess = this.update().setSql("liked = liked - 1")
-                .eq("id", id).update();
-        if (isSuccess) {
-            stringRedisTemplate.opsForZSet().remove(key, userId.toString());
+        } else {
+            // 已点赞 那就执行取消点赞
+            boolean isSuccess = this.update().setSql("liked = liked - 1")
+                    .eq("id", id).update();
+            if (isSuccess) {
+                stringRedisTemplate.opsForZSet().remove(key, userId.toString());
+            }
         }
         return true;
     }
