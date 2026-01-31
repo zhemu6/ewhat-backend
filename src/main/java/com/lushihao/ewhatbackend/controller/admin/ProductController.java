@@ -5,7 +5,7 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.dto.ProductDTO;
 import com.lushihao.ewhatbackend.model.entity.Product;
 import com.lushihao.ewhatbackend.service.ProductService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,10 +21,10 @@ import java.util.List;
 @Slf4j
 @RestController("adminProductController")
 @RequestMapping("/admin/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Resource
-    private ProductService productService;
+    private final ProductService productService;
 
     /**
      * 新增商品

@@ -7,7 +7,7 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.dto.SchoolDTO;
 import com.lushihao.ewhatbackend.model.entity.School;
 import com.lushihao.ewhatbackend.service.SchoolService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController("adminSchoolController")
 @RequestMapping("/admin/school")
+@RequiredArgsConstructor
 public class SchoolController {
-    @Resource
-    private SchoolService schoolService;
+
+    private final SchoolService schoolService;
 
     /**
      * 根据id查询学校
