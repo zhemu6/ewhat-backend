@@ -26,9 +26,7 @@ import com.lushihao.ewhatbackend.service.BlogService;
 import com.lushihao.ewhatbackend.mapper.BlogMapper;
 import com.lushihao.ewhatbackend.service.FollowService;
 import com.lushihao.ewhatbackend.service.UserService;
-import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -46,15 +44,13 @@ import static com.lushihao.ewhatbackend.constant.RedisConstants.FEED_KEY;
  * @createDate 2025-11-05 21:40:53
  */
 @Service
+@RequiredArgsConstructor
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog>
         implements BlogService {
-    @Resource
-    private UserService userService;
 
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private FollowService followService;
+    private final UserService userService;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final FollowService followService;
 
     @Override
     public Long saveBlog(BlogDTO blogDTO) {

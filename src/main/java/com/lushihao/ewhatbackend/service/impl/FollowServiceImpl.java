@@ -11,8 +11,7 @@ import com.lushihao.ewhatbackend.model.vo.UserVO;
 import com.lushihao.ewhatbackend.service.FollowService;
 import com.lushihao.ewhatbackend.mapper.FollowMapper;
 import com.lushihao.ewhatbackend.service.UserService;
-import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +26,12 @@ import java.util.stream.Collectors;
 * @createDate 2025-11-06 13:02:42
 */
 @Service
+@RequiredArgsConstructor
 public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow>
     implements FollowService{
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private UserService userService;
+
+    private final StringRedisTemplate stringRedisTemplate;
+    private final UserService userService;
 
     /**
      * 当前登陆用户关注或者取关followUserId
