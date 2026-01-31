@@ -6,7 +6,7 @@ import com.lushihao.ewhatbackend.model.dto.ProductDTO;
 import com.lushihao.ewhatbackend.model.entity.Product;
 import com.lushihao.ewhatbackend.model.vo.ProductVO;
 import com.lushihao.ewhatbackend.service.ProductService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +22,10 @@ import java.util.List;
 @Slf4j
 @RestController("userProductController")
 @RequestMapping("/user/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-    @Resource
-    private ProductService productService;
+    private final ProductService productService;
 
     /**
      * 查询学校的兑换商品列表
