@@ -4,14 +4,14 @@ import com.lushihao.ewhatbackend.common.BaseResponse;
 import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.config.JwtProperties;
 import com.lushihao.ewhatbackend.constant.JwtClaimsConstant;
+import com.lushihao.ewhatbackend.constant.RoleConstant;
 import com.lushihao.ewhatbackend.model.dto.EmployeeLoginDTO;
 import com.lushihao.ewhatbackend.model.entity.Employee;
 import com.lushihao.ewhatbackend.model.vo.EmployeeLoginVO;
 import com.lushihao.ewhatbackend.service.EmployeeService;
 import com.lushihao.ewhatbackend.utils.JwtUtil;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +29,11 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/admin/employee")
+@RequiredArgsConstructor
 public class EmployeeController {
-    @Resource
-    private EmployeeService employeeService;
-    @Resource
-    private JwtProperties jwtProperties;
+
+    private final EmployeeService employeeService;
+    private final JwtProperties jwtProperties;
 
     /**
      * 管理员登录
@@ -42,12 +42,16 @@ public class EmployeeController {
      */
     @PostMapping("login")
     public BaseResponse<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
-        log.info("管理员登录：{}", employeeLoginDTO);
+        log.info("管理员登录 username={}", employeeLoginDTO.getUsername());
         Employee employee = employeeService.login(employeeLoginDTO);
 
         //登录成功后，生成jwt令牌
         Map<String, Object> claims = new HashMap<>();
         claims.put(JwtClaimsConstant.EMP_ID, employee.getId());
+        claims.put(JwtClaimsConstant.ROLE, employee.getRole());
+        if (employee.getRole() != null && employee.getRole() != RoleConstant.SUPER_ADMIN) {
+            claims.put(JwtClaimsConstant.SCHOOL_ID, employee.getSchoolId());
+        }
         String token = JwtUtil.createJWT(
                 jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(),
