@@ -13,7 +13,7 @@ import com.lushihao.ewhatbackend.model.entity.SeckillProduct;
 import com.lushihao.ewhatbackend.model.vo.ProductVO;
 import com.lushihao.ewhatbackend.service.ProductService;
 import com.lushihao.ewhatbackend.mapper.ProductMapper;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,15 +30,13 @@ import static com.lushihao.ewhatbackend.constant.RedisConstants.SECKILL_STOCK_KE
  * @createDate 2025-11-09 20:28:36
  */
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product>
         implements ProductService {
 
-    @Resource
-    private SeckillProductMapper seckillProductMapper;
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private SchoolMapper schoolMapper;
+    private final SeckillProductMapper seckillProductMapper;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final SchoolMapper schoolMapper;
     /**
      * 新增商品
      *
