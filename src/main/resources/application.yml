@@ -20,11 +20,13 @@ springdoc:
       packages-to-scan: com.lushihao.ewhatbackend.controller
     - group: swagger-config
       packages-to-scan: com.lushihao.ewhatbackend.controller
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
 
+  swagger-ui:
+    path: /doc.html
+
+### 接口文档生成地址 ###
+# NOTE: Knife4j server-side starter has been removed due to Spring Boot 3.5 / Spring Framework 6.2
+# compatibility issues. Use springdoc Swagger UI at /doc.html instead.
 mybatis-plus:
   type-aliases-package: com.lushihao.ewhatbackend.model.entity # ?????
 
