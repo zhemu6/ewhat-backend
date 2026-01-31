@@ -7,7 +7,7 @@ import com.lushihao.ewhatbackend.common.ResultUtils;
 import com.lushihao.ewhatbackend.model.dto.DishDTO;
 import com.lushihao.ewhatbackend.model.entity.Dish;
 import com.lushihao.ewhatbackend.service.DishService;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +22,10 @@ import java.util.List;
 @Slf4j
 @RestController("adminDishController")
 @RequestMapping("/admin/dish")
+@RequiredArgsConstructor
 public class DishController {
-    @Resource
-    private DishService dishService;
+
+    private final DishService dishService;
 
     /**
      * 根据id查询菜品
