@@ -4,6 +4,9 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/**
+ * @author lushihao
+ */
 @Component
 @ConfigurationProperties(prefix = "ewhat.jwt") // 通过配置属性类 他是和application-dev.yml，application.yml中的相关属性值对应
 @Data
@@ -22,5 +25,29 @@ public class JwtProperties {
     private String userSecretKey;
     private long userTtl;
     private String userTokenName;
+
+    public String getAdminSecretKey() {
+        return adminSecretKey;
+    }
+
+    public long getAdminTtl() {
+        return adminTtl;
+    }
+
+    public String getAdminTokenName() {
+        return adminTokenName;
+    }
+
+    public String getUserSecretKey() {
+        return userSecretKey;
+    }
+
+    public long getUserTtl() {
+        return userTtl;
+    }
+
+    public String getUserTokenName() {
+        return userTokenName;
+    }
 
 }
