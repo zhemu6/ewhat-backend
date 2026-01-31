@@ -1,8 +1,10 @@
 package com.lushihao.ewhatbackend.mapper;
 
+import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.lushihao.ewhatbackend.model.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
 * @author lushihao
@@ -11,6 +13,18 @@ import org.apache.ibatis.annotations.Mapper;
 * @Entity com.lushihao.ewhatbackend.model.entity.User
 */
 public interface UserMapper extends BaseMapper<User> {
+
+    @InterceptorIgnore(tenantLine = "1")
+    @Select("select * from tb_user where openid = #{openid} limit 1")
+    User selectByOpenidNoTenant(String openid);
+
+    @InterceptorIgnore(tenantLine = "1")
+    @Select("select school_id from tb_user where id = #{userId}")
+    Long selectSchoolIdByIdNoTenant(Long userId);
+
+    @InterceptorIgnore(tenantLine = "1")
+    @Update("update tb_user set school_id = #{schoolId} where id = #{userId}")
+    int updateSchoolIdByIdNoTenant(Long userId, Long schoolId);
 
 }
 
