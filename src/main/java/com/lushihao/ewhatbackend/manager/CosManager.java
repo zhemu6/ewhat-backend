@@ -4,7 +4,7 @@ import com.lushihao.ewhatbackend.config.CosClientConfig;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -16,13 +16,11 @@ import java.io.File;
  * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Component
+@RequiredArgsConstructor
 public class CosManager {
 
-    @Resource
-    private CosClientConfig cosClientConfig;
-
-    @Resource
-    private COSClient cosClient;
+    private final CosClientConfig cosClientConfig;
+    private final COSClient cosClient;
 
     /**
      * 上传对象

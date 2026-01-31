@@ -1,6 +1,6 @@
 package com.lushihao.ewhatbackend.utils;
 
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -19,13 +19,13 @@ import java.time.format.DateTimeFormatter;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class RedisIdWorker {
     // 开始时间戳 从2022.1.1的0点起始
     private static final long BEGIN_TIMESTAMP = 1640995200L;
     // 时间戳的位数
     private static final int COUNT_BITS = 32;
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
     /**
      * 获取下一个id

@@ -16,9 +16,8 @@ import com.lushihao.ewhatbackend.service.SeckillProductService;
 import com.lushihao.ewhatbackend.utils.RedisIdWorker;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import jakarta.annotation.Resource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -42,16 +41,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, ProductOrder>
         implements ProductOrderService {
-    @Resource
-    private SeckillProductService seckillProductService;
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private RedisIdWorker redisIdWorker;
-    @Resource
-    private ProductService productService;
+    private final SeckillProductService seckillProductService;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final RedisIdWorker redisIdWorker;
+    private final ProductService productService;
     // 创建秒杀订单异步处理线程池
     private static final ExecutorService SECKILL_ORDER_EXECUTOR = Executors.newSingleThreadExecutor();
     // 秒杀的lua脚本
@@ -72,7 +68,7 @@ public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, Pro
             stringRedisTemplate.opsForStream().createGroup("stream.orders", "g1");
         } catch (Exception e) {
             // 消费者组已存在，忽略异常
-            log.debug("消费者组已存在或创建失败: {}", e.getMessage());
+            log.debug("消费者组已存在或创建失败", e);
         }
         SECKILL_ORDER_EXECUTOR.submit(new ProductOrderHandler());
     }
