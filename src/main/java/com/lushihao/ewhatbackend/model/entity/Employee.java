@@ -30,6 +30,16 @@ public class Employee implements Serializable {
     private Long id;
 
     /**
+     * Tenant id (required for school admins; nullable for super admins).
+     */
+    private Long schoolId;
+
+    /**
+     * 1 = school admin, 2 = super admin.
+     */
+    private Integer role;
+
+    /**
      * 姓名
      */
     private String name;
